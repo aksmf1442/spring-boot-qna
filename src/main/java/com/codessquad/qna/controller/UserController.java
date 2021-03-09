@@ -5,6 +5,7 @@ import com.codessquad.qna.domain.User;
 import com.codessquad.qna.service.ExistedUserException;
 import com.codessquad.qna.service.UserService;
 import java.util.List;
+import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -77,5 +78,24 @@ public class UserController {
 
         redirect.addFlashAttribute("fail", true);
         return "redirect:/users/" + originUser.getUserId() + "/form";
+    }
+
+    @GetMapping("/login")
+    public String loginForm() {
+        return "/user/login";
+    }
+
+    @PostMapping("/login")
+    public String login(String userId, String password, RedirectAttributes redirect,
+        HttpSession session) {
+        User sessionUser = userService.findUserByUserId(userId);
+
+        if (sessionUser != null && sessionUser.isMatchingPassword(password)) {
+            session.setAttribute("sessionUser", sessionUser);
+            return "redirect:/";
+        }
+
+        redirect.addFlashAttribute("fail", true);
+        return "redirect:/users/login";
     }
 }
