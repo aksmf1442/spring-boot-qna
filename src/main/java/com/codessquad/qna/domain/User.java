@@ -67,6 +67,14 @@ public class User {
         this.email = user.email;
     }
 
+    public boolean confirmPassword(PasswordVerifier passwordVerifier) {
+        return this.isMatchingPassword(passwordVerifier.getReceivedPassword());
+    }
+
+    public boolean isMatchingId(Long id) {
+        return this.id.equals(id);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -93,9 +101,4 @@ public class User {
             ", email='" + email + '\'' +
             '}';
     }
-
-    public boolean confirmPassword(PasswordVerifier passwordVerifier) {
-        return this.isMatchingPassword(passwordVerifier.getReceivedPassword());
-    }
-
 }
