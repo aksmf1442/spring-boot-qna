@@ -80,6 +80,12 @@ public class UserController {
         return "redirect:/users/" + originUser.getUserId() + "/form";
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.removeAttribute("sessionUser");
+        return "redirect:/";
+    }
+
     @GetMapping("/login")
     public String loginForm() {
         return "/user/login";
