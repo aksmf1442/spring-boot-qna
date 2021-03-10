@@ -2,6 +2,8 @@ package com.codessquad.qna.controller;
 
 import com.codessquad.qna.domain.Question;
 import com.codessquad.qna.service.QnaService;
+import com.codessquad.qna.util.HttpSessionUtils;
+import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,13 @@ public class QnaController {
         this.qnaService = qnaService;
     }
 
+    @GetMapping("/form")
+    public String questionForm(HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "redirect:/users/login";
+        }
+        return "/qna/form";
+    }
 
     @PostMapping("")
     public String createQuestion(Question question) {

@@ -4,6 +4,7 @@ import com.codessquad.qna.domain.PasswordVerifier;
 import com.codessquad.qna.domain.User;
 import com.codessquad.qna.service.ExistedUserException;
 import com.codessquad.qna.service.UserService;
+import com.codessquad.qna.util.HttpSessionUtils;
 import java.util.List;
 import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -57,11 +57,11 @@ public class UserController {
 
     @GetMapping("/{id}/form")
     public String updateUserForm(@PathVariable Long id, Model model, HttpSession session) {
-        User sessionUser = (User) session.getAttribute("sessionUser");
-
-        if (sessionUser == null) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/users/login";
         }
+
+        User sessionUser = HttpSessionUtils.getUserFromSession(session);
 
         if (!sessionUser.isMatchingId(id)) {
             return "redirect:/users";
@@ -76,11 +76,11 @@ public class UserController {
     public String updateUser(@PathVariable Long id, User user,
         PasswordVerifier passwordVerifier, RedirectAttributes redirect, HttpSession session) {
 
-        User sessionUser = (User) session.getAttribute("sessionUser");
-
-        if (sessionUser == null) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/users/login";
         }
+
+        User sessionUser = HttpSessionUtils.getUserFromSession(session);
 
         if (!sessionUser.isMatchingId(id)) {
             return "redirect:/users";
@@ -88,7 +88,7 @@ public class UserController {
 
         User originUser = userService.findById(id);
 
-        if (originUser.confirmPassword(passwordVerifier)) {
+        if (originUser.isMatchingPassword(passwordVerifier.getReceivedPassword())) {
             userService.updateUserData(originUser, user);
             return "redirect:/users";
         }
@@ -111,10 +111,10 @@ public class UserController {
     @PostMapping("/login")
     public String login(String userId, String password, RedirectAttributes redirect,
         HttpSession session) {
-        User sessionUser = userService.findUserByUserId(userId);
+        User user = userService.findUserByUserId(userId);
 
-        if (sessionUser != null && sessionUser.isMatchingPassword(password)) {
-            session.setAttribute("sessionUser", sessionUser);
+        if (user != null && user.isMatchingPassword(password)) {
+            session.setAttribute("sessionUser", user);
             return "redirect:/";
         }
 

@@ -67,10 +67,6 @@ public class User {
         this.email = user.email;
     }
 
-    public boolean confirmPassword(PasswordVerifier passwordVerifier) {
-        return this.isMatchingPassword(passwordVerifier.getReceivedPassword());
-    }
-
     public boolean isMatchingId(Long id) {
         return this.id.equals(id);
     }

@@ -20,7 +20,16 @@ public class Question {
 
     private String title;
     private String contents;
-    private LocalDateTime createdDateTime = LocalDateTime.now();
+    private LocalDateTime createdDateTime;
+
+    protected Question() {}
+
+    public Question(String writer, String title, String contents) {
+        this.writer = writer;
+        this.title = title;
+        this.contents = contents;
+        this.createdDateTime = LocalDateTime.now();
+    }
 
     public Long getId() {
         return id;
@@ -30,42 +39,16 @@ public class Question {
         return writer;
     }
 
-    public void setWriter(String writer) {
-        this.writer = writer;
-    }
-
     public String getTitle() {
         return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getContents() {
         return contents;
     }
 
-    public void setContents(String contents) {
-        this.contents = contents;
-    }
-
-    public LocalDateTime getCreatedDateTime() {
-        return createdDateTime;
-    }
-
     public String getFormattedCreatedTime() {
         return createdDateTime.format(DateTimeUtil.getTimeFormatter());
     }
 
-    @Override
-    public String toString() {
-        return "Question{" +
-            "id=" + id +
-            ", writer='" + writer + '\'' +
-            ", title='" + title + '\'' +
-            ", contents='" + contents + '\'' +
-            ", createdDateTime=" + createdDateTime +
-            '}';
-    }
 }
