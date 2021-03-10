@@ -44,10 +44,9 @@ public class UserController {
         return "/user/list";
     }
 
-
-    @GetMapping("/{userId}")
-    public String userProfile(@PathVariable String userId, Model model) {
-        User user = userService.findUserByUserId(userId);
+    @GetMapping("/{id}")
+    public String userProfile(@PathVariable Long id, Model model) {
+        User user = userService.findById(id);
         if (user == null) {
             return "redirect:/users";
         }
