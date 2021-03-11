@@ -7,9 +7,11 @@ import com.codessquad.qna.util.HttpSessionUtils;
 import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -24,12 +26,14 @@ public class QnaController {
 
     @PostMapping
     public String createQuestion(Question question, HttpSession session) {
-        User sessionUser = HttpSessionUtils.getUserFromSession(session);
-        if (sessionUser == null) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
             return "redirect:/";
         }
 
+        User sessionUser = HttpSessionUtils.getUserFromSession(session);
         question.setWriter(sessionUser);
+        System.out.println(question.getWriter());
+
         qnaService.save(question);
         return "redirect:/";
     }
@@ -49,5 +53,60 @@ public class QnaController {
         return "/qna/show";
     }
 
+    @GetMapping("/{id}/form")
+    public String updateQuestionForm(@PathVariable Long id, Model model, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "redirect:/users/login";
+        }
+
+        User sessionUser = HttpSessionUtils.getUserFromSession(session);
+        Question question = qnaService.findQuestionById(id);
+        User user = question.getWriter();
+
+        if (!sessionUser.isMatchingId(user.getId())) {
+            throw new DoNotAccessException();
+        }
+
+        model.addAttribute("question", question);
+
+        return "/qna/updateForm";
+    }
+
+    @PutMapping("/{id}")
+    public String updateQuestion(@PathVariable Long id, Question newQuestion, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "redirect:/users/login";
+        }
+
+        User sessionUser = HttpSessionUtils.getUserFromSession(session);
+        Question question = qnaService.findQuestionById(id);
+        User user = question.getWriter();
+
+        if (!sessionUser.isMatchingId(user.getId())) {
+            throw new DoNotAccessException();
+        }
+
+        qnaService.updateQuestionData(question, newQuestion);
+
+        return "redirect:/questions/" + id;
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteQuestion(@PathVariable Long id, HttpSession session) {
+        if (!HttpSessionUtils.isLoginUser(session)) {
+            return "redirect:/users/login";
+        }
+
+        User sessionUser = HttpSessionUtils.getUserFromSession(session);
+        Question question = qnaService.findQuestionById(id);
+        User user = question.getWriter();
+
+        if (!sessionUser.isMatchingId(user.getId())) {
+            throw new DoNotAccessException();
+        }
+
+        qnaService.delete(question);
+        return "redirect:/";
+    }
 
 }

@@ -60,4 +60,8 @@ public class Question {
         return createdDateTime.format(DateTimeUtil.getTimeFormatter());
     }
 
+    public void update(Question newQuestion) {
+        this.title = newQuestion.getTitle();
+        this.contents = newQuestion.getContents();
+    }
 }

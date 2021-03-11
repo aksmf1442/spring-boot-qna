@@ -25,4 +25,13 @@ public class QnaService {
     public Question findQuestionById(Long id) {
         return questionRepository.findById(id).orElse(null);
     }
+
+    public void updateQuestionData(Question question, Question newQuestion) {
+        question.update(newQuestion);
+        questionRepository.save(question);
+    }
+
+    public void delete(Question question) {
+        questionRepository.deleteById(question.getId());
+    }
 }
