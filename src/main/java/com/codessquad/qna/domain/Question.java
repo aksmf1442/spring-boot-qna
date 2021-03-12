@@ -64,4 +64,5 @@ public class Question {
         this.title = newQuestion.getTitle();
         this.contents = newQuestion.getContents();
     }
+
 }

@@ -36,7 +36,6 @@ public class QnaController {
 
         User sessionUser = HttpSessionUtils.getUserFromSession(session);
         question.setWriter(sessionUser);
-        System.out.println(question.getWriter());
 
         qnaService.save(question);
         return "redirect:/";
