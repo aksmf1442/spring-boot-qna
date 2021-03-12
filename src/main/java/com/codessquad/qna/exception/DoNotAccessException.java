@@ -1,4 +1,4 @@
-package com.codessquad.qna.controller;
+package com.codessquad.qna.exception;
 
 public class DoNotAccessException extends RuntimeException {
 

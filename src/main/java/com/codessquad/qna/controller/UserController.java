@@ -2,7 +2,7 @@ package com.codessquad.qna.controller;
 
 import com.codessquad.qna.domain.PasswordVerifier;
 import com.codessquad.qna.domain.User;
-import com.codessquad.qna.service.ExistedUserException;
+import com.codessquad.qna.exception.ExistedUserException;
 import com.codessquad.qna.service.UserService;
 import com.codessquad.qna.util.HttpSessionUtils;
 import java.util.List;
@@ -47,6 +47,7 @@ public class UserController {
     @GetMapping("/{id}")
     public String userProfile(@PathVariable Long id, Model model) {
         User user = userService.findById(id);
+
         if (user == null) {
             return "redirect:/users";
         }

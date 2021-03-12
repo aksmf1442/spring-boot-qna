@@ -2,6 +2,8 @@ package com.codessquad.qna.controller;
 
 import com.codessquad.qna.domain.Question;
 import com.codessquad.qna.domain.User;
+import com.codessquad.qna.exception.DoNotAccessException;
+import com.codessquad.qna.service.AnswerService;
 import com.codessquad.qna.service.QnaService;
 import com.codessquad.qna.util.HttpSessionUtils;
 import javax.servlet.http.HttpSession;
@@ -19,9 +21,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class QnaController {
 
     private final QnaService qnaService;
+    private final AnswerService answerService;
 
-    public QnaController(QnaService qnaService) {
+    public QnaController(QnaService qnaService, AnswerService answerService) {
         this.qnaService = qnaService;
+        this.answerService = answerService;
     }
 
     @PostMapping
@@ -50,6 +54,7 @@ public class QnaController {
     public String showQuestion(@PathVariable Long id, Model model) {
         Question question = qnaService.findQuestionById(id);
         model.addAttribute("question", question);
+        model.addAttribute("answers", answerService.findAll());
         return "/qna/show";
     }
 

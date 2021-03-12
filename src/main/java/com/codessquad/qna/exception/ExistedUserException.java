@@ -1,4 +1,4 @@
-package com.codessquad.qna.service;
+package com.codessquad.qna.exception;
 
 public class ExistedUserException extends RuntimeException {
 

@@ -1,6 +1,7 @@
 package com.codessquad.qna.service;
 
 import com.codessquad.qna.domain.User;
+import com.codessquad.qna.exception.ExistedUserException;
 import com.codessquad.qna.repository.UserRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
